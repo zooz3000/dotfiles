@@ -9,6 +9,23 @@
         path: /tmp/dotfiles
         state: directory
 
+    - name: install zsh
+      ansible.builtin.apt:
+        name: zsh
+        state: present
+        update_cache: true
+
+    - name: download oh my zsh installation script
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+        des: /tmp/dotfiles/install_ohmyzsh.sh
+
+    - name: run oh my zsh installation script
+      # not safe, fuck it we ball
+      command: sh /tmp/dotfiles/install_ohmyzsh.sh --unattended
+      register: ohmyzsh_result
+      failed_when: "'FAILED' in ohmyzsh_result.stderr"
+
     - name: Download nvim
       ansible.builtin.get_url:
         url: https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
